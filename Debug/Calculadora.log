@@ -1,0 +1,12 @@
+﻿Build started 02/09/2015 15:54:43.
+     1>Project "C:\cygwin64\home\WIN 8\Organizacion de computadores\Calculadora\Calculadora\Calculadora\Calculadora.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\Calculadora.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Calculadora.cpp
+         Calculadora.cpp
+     1>c:\cygwin64\home\win 8\organizacion de computadores\calculadora\calculadora\calculadora\calculadora.cpp(34): error C2414: illegal number of operands
+     1>c:\cygwin64\home\win 8\organizacion de computadores\calculadora\calculadora\calculadora\calculadora.cpp(43): error C2414: illegal number of operands
+     1>Done Building Project "C:\cygwin64\home\WIN 8\Organizacion de computadores\Calculadora\Calculadora\Calculadora\Calculadora.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.56
