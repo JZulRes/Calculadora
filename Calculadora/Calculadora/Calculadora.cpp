@@ -11,56 +11,44 @@ using namespace std;
 
 int sumar(int a, int b) {
 	int valor;
-	_asm {
+	__asm {
 		mov eax, a  //movemos el valor de a al eax
-			add eax, b //sumamos los valores del eax y el valor de b
-			mov valor, eax // y movemos el resultado del eax a la varible valor
+		add eax, b //sumamos los valores del eax y el valor de b
+		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
 int restar(int a, int b) {
 	int valor;
-	_asm {
+	__asm {
 		mov eax, a  //movemos el valor de a al eax
-			sub eax, b //restar los valores del eax y el valor de b
-			mov valor, eax // y movemos el resultado del eax a la varible valor
+		sub eax, b //restar los valores del eax y el valor de b
+		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
 int multiplicar(int a, int b) {
 	int valor;
-	_asm {
+	__asm {
 		mov eax, a  //movemos el valor de a al eax
-			mul eax, b //multiplicar los valores del eax y el valor de b
-			mov valor, eax // y movemos el resultado del eax a la varible valor
+		mul eax, b //multiplicar los valores del eax y el valor de b
+		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
 int dividir(int a, int b) {
 	int valor;
-	_asm {
+	__asm {
 		mov eax, a  //movemos el valor de a al eax
-			div eax, b //dividimos los valores del eax y el valor de b
-			mov valor, eax // y movemos el resultado del eax a la varible valor
+		div eax, b //dividimos los valores del eax y el valor de b
+		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
-void continuacion() {
-	int n = 0;
-	cout << "Operacion finalizada, Desea continuar" << endl;
-	cout << "1 para SI o 2 para NO" << endl;
-	cin >> n;
-	if (n == 1) {
-		main();
-	}
-	else if (n == 2) {
-		return;
-	}
 
-}
 int main()
 {   
-inicio:	int n;
+inicio: int n;
 	int a, b;
 	cout << "Bienvenido a la calcuadora Remasterizada" << endl;
 	cout << "Teclee la operacion a realizar" << endl;
@@ -78,7 +66,7 @@ inicio:	int n;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
 		cout << sumar(a,b) << endl;
-		continuacion();
+		goto continuacion;
 	}
 	if (n == 2) {
 		cout << "Operacion Resta activada" << endl;
@@ -87,7 +75,7 @@ inicio:	int n;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
 		restar(a,b);
-		continuacion();
+		goto continuacion;
 	}
 	if (n == 3) {
 		cout << "Operacion Multiplicacion activada" << endl;
@@ -96,7 +84,7 @@ inicio:	int n;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
 		multiplicar(a,b);
-		continuacion();
+		goto continuacion;
 	}
 	if (n == 4) {
 		cout << "Operacion Division activada" << endl;
@@ -105,9 +93,15 @@ inicio:	int n;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
 		dividir(a,b);
-		continuacion();
+		goto continuacion;
 	}
-
-    return 0;
+continuacion: n = 0;
+	cout << "Operacion finalizada, Desea continuar" << endl;
+	cout << "1 para SI o 2 para NO" << endl;
+	cin >> n;
+	if (n == 1) {
+		goto inicio;
+	}
+	return 0;
 }
 
