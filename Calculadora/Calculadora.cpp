@@ -31,7 +31,7 @@ int multiplicar(int a, int b) {
 	int valor;
 	__asm {
 		mov eax, a  //movemos el valor de a al eax
-		mul eax, b //multiplicar los valores del eax y el valor de b
+		mul b //multiplicar los valores del eax y el valor de b
 		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
@@ -40,7 +40,7 @@ int dividir(int a, int b) {
 	int valor;
 	__asm {
 		mov eax, a  //movemos el valor de a al eax
-		div eax, b //dividimos los valores del eax y el valor de b
+		div b //dividimos los valores del eax y el valor de b
 		mov valor, eax // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
