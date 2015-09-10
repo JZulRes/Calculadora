@@ -7,6 +7,8 @@
 #include "stdlib.h"
 #include "iostream"
 
+const int zero = 0;
+
 using namespace std;
 
 int sumar(int a, int b) {
@@ -46,6 +48,21 @@ int dividir(int a, int b) {
 	return valor;
 }
 
+float pot(float base, int exp) {
+	float res = 1;
+	__asm {
+ 		finit;
+		mov ecx, exp; //cargar exp en cx
+	ciclo: fld dword ptr[res]; //cargar resultado en ax
+		fmul dword ptr[base]; // multiplico
+		fst dword ptr[res]; // muevo el resultado a res
+		dec ecx; //decremento cx
+		cmp ecx, zero; //comparo si es igual a 0
+		jne ciclo; //loop si no son iguales
+	}
+	return res;
+}
+
 int main()
 {   
 inicio: int n;
@@ -55,7 +72,8 @@ inicio: int n;
 	cout << "Suma(1)" << endl;
 	cout << "Resta(2)" << endl;
 	cout << "Multiplicacion(3)" << endl;
-	cout << "Divicion(4)" << endl;
+	cout << "Division(4)" << endl;
+	cout << "Potenciacion(5)" << endl;
 	cin >> n;
 	cout << "" << endl;
 
@@ -93,6 +111,15 @@ inicio: int n;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
 		dividir(a,b);
+		goto continuacion;
+	}
+	if (n == 5) {
+		cout << "Digite base, entera o decimal" << endl;
+		float b;
+		cin >> b;
+		cout << "Ingrese exponente." << endl << "ADVERTENCIA: SOLO SE ADMITEN EXPONENTES ENTEROS" << endl;
+		cin >> a;
+		cout << "Resultado: " << pot(b, a) << endl;
 		goto continuacion;
 	}
 continuacion: n = 0;
