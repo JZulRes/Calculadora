@@ -11,39 +11,39 @@ const int zero = 0;
 
 using namespace std;
 
-int sumar(int a, int b) {
-	int valor;
+float sumar(float a, float b) {
+	float valor;
 	__asm {
-		mov eax, a  //movemos el valor de a al eax
-		add eax, b //sumamos los valores del eax y el valor de b
-		mov valor, eax // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al eax
+		addss xmm0, b //sumamos los valores del eax y el valor de b
+		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
-int restar(int a, int b) {
-	int valor;
+float restar(float a, float b) {
+	float valor;
 	__asm {
-		mov eax, a  //movemos el valor de a al eax
-		sub eax, b //restar los valores del eax y el valor de b
-		mov valor, eax // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al eax
+		subss xmm0, b //restar los valores del eax y el valor de b
+		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
-int multiplicar(int a, int b) {
-	int valor;
+float multiplicar(float a, float b) {
+	float valor;
 	__asm {
-		mov eax, a  //movemos el valor de a al eax
-		mul b //multiplicar los valores del eax y el valor de b
-		mov valor, eax // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al eax
+		mulss xmm0 ,b //multiplicar los valores del xmm0 y el valor de b
+		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
-int dividir(int a, int b) {
-	int valor;
+float dividir(float a, float b) {
+	float valor;
 	__asm {
-		mov eax, a  //movemos el valor de a al eax
-		div b //dividimos los valores del eax y el valor de b
-		mov valor, eax // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al eax
+		divss xmm0, b //dividimos los valores del eax y el valor de b
+		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
 	}
 	return valor;
 }
@@ -66,7 +66,7 @@ float pot(float base, int exp) {
 int main()
 {   
 inicio: int n;
-	int a, b;
+	float a, b;
 	cout << "Bienvenido a la calcuadora Remasterizada" << endl;
 	cout << "Teclee la operacion a realizar" << endl;
 	cout << "Suma(1)" << endl;
@@ -83,7 +83,8 @@ inicio: int n;
 		cin >> a;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
-		cout << sumar(a,b) << endl;
+		cout << "Resultado = " << sumar(a,b) << endl;
+		cout << endl;
 		goto continuacion;
 	}
 	if (n == 2) {
@@ -92,7 +93,8 @@ inicio: int n;
 		cin >> a;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
-		restar(a,b);
+		cout << "Resultado = " << restar(a,b) << endl;
+		cout << endl;
 		goto continuacion;
 	}
 	if (n == 3) {
@@ -101,7 +103,8 @@ inicio: int n;
 		cin >> a;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
-		multiplicar(a,b);
+		cout << "Resultado = " << multiplicar(a,b) << endl;
+		cout << endl;
 		goto continuacion;
 	}
 	if (n == 4) {
@@ -110,7 +113,8 @@ inicio: int n;
 		cin >> a;
 		cout << "Digite segundo numero: " << endl;
 		cin >> b;
-		dividir(a,b);
+		cout << "Resultado = " << dividir(a, b) << endl;
+		cout << endl;
 		goto continuacion;
 	}
 	if (n == 5) {
@@ -119,7 +123,8 @@ inicio: int n;
 		cin >> b;
 		cout << "Ingrese exponente." << endl << "ADVERTENCIA: SOLO SE ADMITEN EXPONENTES ENTEROS" << endl;
 		cin >> a;
-		cout << "Resultado: " << pot(b, a) << endl;
+		cout << "Resultado = " << pot(b,a) << endl;
+		cout << endl;
 		goto continuacion;
 	}
 continuacion: n = 0;
