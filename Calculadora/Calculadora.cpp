@@ -48,55 +48,58 @@ float dividir(float a, float b) {
 	}
 	return valor;
 }
-
-float pot(float base, int exp) {
-	float res = 1;
+float square_root(float base) {
+	const float uno = 1.0, dos = 2.0;
+	float zero = (float)::zero, minus1 = (float)::minus1, res = 0.0, tmp = 0.0, tmp1, tmp2;
 	__asm {
- 		finit;
-		mov ecx, exp; //cargar exp en cx
-	ciclo: fld dword ptr[res]; // meto a res en la pila
-		fmul dword ptr[base]; // multiplico por base
-		fst dword ptr[res]; // muevo el resultado a res
-		dec ecx; //decremento cx
-		cmp ecx, zero; //comparo si es igual a 0
-		jne ciclo; //loop si no son iguales
+		finit;
+		fld[zero];
+		fld[base];
+		fcomip st(0), ST(1);
+		fstp st(0);
+		jb menor;
+		fld[base];
+		fst[res];
+
+	ciclo:
+		movss xmm0, dword ptr[res]
+			comiss xmm0, dword ptr[tmp]
+			je fin;
+		movss xmm0, res;
+		movss tmp, xmm0; //tmp = res
+		movss xmm0, base; //base en xmm0
+		divss xmm0, res; //base/res;
+		addss xmm0, res; // (base/res) + res
+		divss xmm0, dos; // ((base/res)+res)/2
+		movss res, xmm0;
+		jmp ciclo;
+
+	menor:	fld dword ptr[minus1];
+		fst dword ptr[res];
+		jmp fin;
+
+	}
+
+fin: return res;
+}
+float pot(float base, float exp) {
+	float res;
+	__asm {
+		fld dword ptr[exp];
+		fld dword ptr[base];
+		fyl2x;
+		fld st;
+		frndint;
+		fsub st(1), st;
+		fxch st(1);
+		f2xm1;
+		fld1;
+		fadd;
+		fscale;
+		fstp dword ptr[res];
 	}
 	return res;
 }
-
-float square_root(float base) {
-	const float uno = 1.0, dos=2.0;
-	float zero = (float)::zero, minus1 = (float)::minus1, res=0.0, tmp=0.0;
-	__asm {
-		finit;
-		fld dword ptr[zero];
-		fld dword ptr[base];
-		fcomip ST(0), ST(1);
-		jb menor;
-		fld dword ptr[base];
-		fst dword ptr[res];
-
-ciclo:  fld dword ptr[res];
-		fld dword ptr[tmp];
-		fcomip ST(0), ST(1);
-		je fin;
-		fld dword ptr[res];
-		fst dword ptr[tmp]; //tmp = res
-		fld dword ptr[base]; //meto res en el stack
-		fdiv dword ptr[res]; //   base/res
-		fadd dword ptr[res]; // base/res + res
-		fdiv dword ptr[dos]; // (base/res + res)/2
-		fst dword ptr[res]; //res = (base/res + res)/2
-		jmp ciclo;
-
-menor:	fld dword ptr[minus1];
-		fst dword ptr[res];
-		jmp fin;
-	}
-fin: return res;
-}
-
-
 int factorial(int n) {
 	const int zero = 0, one = 1, minusone=-1;
 	int res = 1;
@@ -126,91 +129,156 @@ int factorial(int n) {
 	}
 fin: return res;
 }
+float _exp(float n) {
+	float res;
+	const float e = 2.7182818284590452353;
+	__asm {
+		push ecx;
+		movss xmm0, dword ptr[n];
+		movss dword ptr[esp], xmm0;
+		push ecx;
+		movss xmm0, dword ptr[e];
+		movss dword ptr[esp], xmm0;
+		call pot;
+		add esp, 8;
+		fstp dword ptr[res];
+	}
+	return res;
+}
 
 int main()
 {   
 inicio: int n;
 	float a, b;
-	cout << "Bienvenido a la calcuadora Remasterizada" << endl;
-	cout << "Teclee la operacion a realizar" << endl;
-	cout << "Suma(1)" << endl;
-	cout << "Resta(2)" << endl;
-	cout << "Multiplicacion(3)" << endl;
-	cout << "Division(4)" << endl;
-	cout << "Potenciacion(5)" << endl;
-	cout << "Raiz cuadrada(6)" << endl;
-	cout << "Factorial(7)" << endl;
+	cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..Bienvenido a la calculadora..::..::.\n..::..¿Qué operación desea realizar ? ..::..\n.::. = > Sumar dos números(1) ..::..::..::..\n.::. = > Restar dos números(2) ..::..::..::.\n.::. = > Multiplicar dos números(3) ..::..::\n.::. = > Dividir dos números(4) ..::..::..::\n.::. = > Elevar un número a una potencia(5) :\n.::. = > Raíz cuadrada de un número(6) ..::\n.::. = > Factorial de un número(7) ..::..::\n..::..::..::..::..::..::..::..::..::..::..\n..::..Por favor digite el número de ..::..\n..::..la operación que desea realizar ::..\n.::.-->";
 	cin >> n;
-	cout << "" << endl;
 
 	if (n == 1) {
-		cout << "Operacion Suma activada" << endl;
-		cout << "Digite primer numero: " << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..::..::Ha seleccionado sumar.::..::..\n"
+			<< "..::..Por favor, digite el primer.::..::..\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> a;
-		cout << "Digite segundo numero: " << endl;
+		cout << "..::..Por favor, digite el segundo.::..::.\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> b;
-		cout << "Resultado = " << sumar(a,b) << endl;
-		cout << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << sumar(a, b) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 2) {
-		cout << "Operacion Resta activada" << endl;
-		cout << "Digite primer numero: " << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..::..::Ha seleccionado restar.::..::.\n"
+			<< "..::..Por favor, digite el primer.::..::..\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> a;
-		cout << "Digite segundo numero: " << endl;
+		cout << "..::..Por favor, digite el segundo.::..::.\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> b;
-		cout << "Resultado = " << restar(a,b) << endl;
-		cout << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << restar(a, b) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 3) {
-		cout << "Operacion Multiplicacion activada" << endl;
-		cout << "Digite primer numero: " << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado multiplicar.::..::.\n"
+			<< "..::..Por favor, digite el primer.::..::..\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> a;
-		cout << "Digite segundo numero: " << endl;
+		cout  << "..::..Por favor, digite el segundo.::..::.\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> b;
-		cout << "Resultado = " << multiplicar(a,b) << endl;
-		cout << endl;
+		cout << endl << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << multiplicar(a, b) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 4) {
-		cout << "Operacion Division activada" << endl;
-		cout << "Digite primer numero: " << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado dividir.::..::..::.\n"
+			<< "..::..Por favor, digite el primer.::..::..\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> a;
-		cout << "Digite segundo numero: " << endl;
+		cout << "..::..Por favor, digite el segundo.::..::.\n"
+			<< "..::..número de la operación     .::..::..\n"
+			<< ".::.-->";
 		cin >> b;
-		cout << "Resultado = " << dividir(a, b) << endl;
-		cout << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << dividir(a, b) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 5) {
-		cout << "Digite base, entera o decimal" << endl;
-		float b;
-		cin >> b;
-		cout << "Ingrese exponente." << endl << "ADVERTENCIA: SOLO SE ADMITEN EXPONENTES ENTEROS" << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado potenciación::..::..\n"
+			<< "..::..Por favor, digite la base::..::..::..\n"
+			<< ".::.-->";
 		cin >> a;
-		cout << "Resultado = " << pot(b,a) << endl;
-		cout << endl;
+		cout 
+			<< "..::..Por favor, digite el exponente.::..::\n"
+			<< ".::.-->";
+		cin >> b;
+		cout  << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << pot(a, b) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 6) {
-		cout << "Digite el numero al cual le desea sacar la raiz" << endl;
-		float b,r;
-		cin >> b;
-		r = square_root(b);
-		printf(r < 0 ? "No se puede sacar raiz de numeros negativos\n" : "%s %d", "El resultado es: \n", r);
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado radicación:..::..::.\n"
+			<< "..::..Por favor, digite el       .::..::..\n"
+			<< "..::..radicando    .::..::..\n"
+			<< ".::.-->";
+		cin >> a;
+		float r = square_root(a);
+		if (r < 0) {
+			cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..ERROR, no se puede sacar raíz de::..\n..::..números negativos               ::..\n";
+			goto continuacion;
+		}
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << r << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 	if (n == 7) {
-		cout << "ATENCION: Solo se admite el factorial de ENTEROS NO-NEGATIVOS" << endl << "Digite el numero" << endl;
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado factorial:..::..::.\n"
+			<< "..::..ATENCION: Solo esta permitido:..::..\n"
+			<< "..::..El uso de enteros positivos  :..::..\n"
+			<< "..::..Por favor, digite el número.::..::..\n"
+			<< ".::.-->";
 		int b=0;
 		cin >> b;
 		b = factorial(b);
-		printf(b < 0 ? "No se puede hallar el factorial de numeros negativos" : "%s %d", "El resultado es: \n", b);
+		if (b < 0) {
+			cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..ERROR, no se puede sacar factorail de::..\n..::..números negativos               ::..\n";
+			goto continuacion;
+		}
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << b << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 continuacion: n = 0;
-	printf("Desea realizar otra operacion?(s/n) \n");
+	cout << "..::..::..::..::..::..::..::..::..::..::.."
+		<< "..::..Desea realizar otra operacion? (s/n)..::.."
+		<< ".::.-->";
 	char o;
 	cin >> o;
 	if (o == 's') {
