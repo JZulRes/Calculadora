@@ -15,36 +15,36 @@ using namespace std;
 float sumar(float a, float b) {
 	float valor;
 	__asm {
-		movss xmm0, a  //movemos el valor de a al eax
-		addss xmm0, b //sumamos los valores del eax y el valor de b
-		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al xmm0
+		addss xmm0, b //sumamos los valores del xmm0 y el valor de b
+		movss valor, xmm0 // y movemos el resultado del xmm0 a la varible valor
 	}
 	return valor;
 }
 float restar(float a, float b) {
 	float valor;
 	__asm {
-		movss xmm0, a  //movemos el valor de a al eax
-		subss xmm0, b //restar los valores del eax y el valor de b
-		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al xmm0
+		subss xmm0, b //restar los valores del xmm0 y el valor de b
+		movss valor, xmm0 // y movemos el resultado del xmm0 a la varible valor
 	}
 	return valor;
 }
 float multiplicar(float a, float b) {
 	float valor;
 	__asm {
-		movss xmm0, a  //movemos el valor de a al eax
+		movss xmm0, a  //movemos el valor de a al xmm0
 		mulss xmm0 ,b //multiplicar los valores del xmm0 y el valor de b
-		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
+		movss valor, xmm0 // y movemos el resultado del xmm0 a la varible valor
 	}
 	return valor;
 }
 float dividir(float a, float b) {
 	float valor;
 	__asm {
-		movss xmm0, a  //movemos el valor de a al eax
-		divss xmm0, b //dividimos los valores del eax y el valor de b
-		movss valor, xmm0 // y movemos el resultado del eax a la varible valor
+		movss xmm0, a  //movemos el valor de a al xmm0
+		divss xmm0, b //dividimos los valores del xmm0 y el valor de b
+		movss valor, xmm0 // y movemos el resultado del xmm0 a la varible valor
 	}
 	return valor;
 }
@@ -145,12 +145,51 @@ float _exp(float n) {
 	}
 	return res;
 }
+float seno(float n){
+	float radianes = 0.0174532925;
+	float grados = radianes*n;
+	__asm {
+		fld grados  //guarda losgrados 
+			fsin              //la funcion seno
+			fst[grados]       // almacenamiento y comparacion
+	}
+		
+}
+float coseno(float n) {
+	float radianes = 0.0174532925;
+	float grados = radianes*n;
+	__asm {
+		fld grados  //guarda losgrados 
+			fcos              //la funcion coseno
+			fst[grados]       //almacenamiento y comparacion 
+	}
+}
+float tangente(float n) {
+	return dividir(seno(n), coseno(n));
+}
+
 
 int main()
 {   
 inicio: int n;
 	float a, b;
-	cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..Bienvenido a la calculadora..::..::.\n..::..¿Qué operación desea realizar ? ..::..\n.::. = > Sumar dos números(1) ..::..::..::..\n.::. = > Restar dos números(2) ..::..::..::.\n.::. = > Multiplicar dos números(3) ..::..::\n.::. = > Dividir dos números(4) ..::..::..::\n.::. = > Elevar un número a una potencia(5) :\n.::. = > Raíz cuadrada de un número(6) ..::\n.::. = > Factorial de un número(7) ..::..::\n..::..::..::..::..::..::..::..::..::..::..\n..::..Por favor digite el número de ..::..\n..::..la operación que desea realizar ::..\n.::.-->";
+	cout << "..::..::..::..::..::..::..::..::..::..::..\n"
+		<< "..::..Bienvenido a la calculadora..::..::.\n"
+		<<"..::..¿Qué operación desea realizar ? ..::..\n"
+		<< ".::. = > Sumar dos números(1) ..::..::..::..\n"
+		<<".::. = > Restar dos números(2) ..::..::..::.\n"
+		<<".::. = > Multiplicar dos números(3) ..::..::\n"
+		<<".::. = > Dividir dos números(4) ..::..::..::\n"
+		<<".::. = > Elevar un número a una potencia(5) :\n"
+		<<".::. = > Raíz cuadrada de un número(6) ..::\n"
+		<<".::. = > Factorial de un número(7) ..::..::\n"
+		<<".::. = > El seno de un números(8) se calculara con Funcion..::..::\n"
+		<< ".::. = > El coseno de un numero(9) se calculara con Funcion....::\n"
+		<< ".::. = > La Tangente de un numero(10)....::\n"
+		<<"..::..::..::..::..::..::..::..::..::..::..\n"
+		<<"..::..Por favor digite el número de ..::..\n"
+		<<"..::..la operación que desea realizar ::..\n"
+		<<".::.-->";
 	cin >> n;
 
 	if (n == 1) {
@@ -271,10 +310,50 @@ inicio: int n;
 		}
 		cout << "..::..::..::..::..::..::..::..::..::..::.."
 			<< endl << "..::..El resultado de la operación es.::..\n"
-			<< ".::.=>" << b << endl
+			<< ".::.=> " << b << endl
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
+	if (n == 8) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado Seno:..::..::.\n"
+			<< "..::..ATENCION: El seno se calculara con Funcion:..::..\n"
+			<< "..::..Ingrese el angulo.::.-->";
+		float n = 0;
+	    cin >> n;
+		cout << "..::..::..::..::..::..::..::..::..::..::..";
+		cout << endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=> " << seno(n) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n == 9) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado Coseno:..::.\n"
+			<< "..::..ATENCION: El Coseno se calculara con Funcion.::..\n"
+			<< "..::..Ingrese el angulo.::.-->";
+		float n = 0;
+		cin >> n;
+		cout << "..::..::..::..::..::..::..::..::..::..::..";
+		cout << endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=> " << coseno(n) <<endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n ==10) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado Tangente::.\n"
+			<< "..::..Ingrese el angulo.::.-->";
+		float n = 0;
+		cin >> n;
+		cout << "..::..::..::..::..::..::..::..::..::..::..";
+		cout << endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=> " << tangente(n) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+
+
 continuacion: n = 0;
 	cout << "..::..::..::..::..::..::..::..::..::..::.."
 		<< "..::..Desea realizar otra operacion? (s/n)..::.."
