@@ -147,9 +147,12 @@ float _exp(float n) {
 }
 float seno(float n){
 	float radianes = 0.0174532925;
+	if (n == 180 || n == 360) {
+		return 0;
+	}
 	float grados = radianes*n;
 	__asm {
-		fld grados  //guarda losgrados 
+		fld grados            //guarda losgrados 
 			fsin              //la funcion seno
 			fst[grados]       // almacenamiento y comparacion
 	}
@@ -157,9 +160,12 @@ float seno(float n){
 }
 float coseno(float n) {
 	float radianes = 0.0174532925;
+	if (n == 90 || n == 270) {
+		return 0;
+	}
 	float grados = radianes*n;
 	__asm {
-		fld grados  //guarda losgrados 
+		fld grados            //guarda losgrados 
 			fcos              //la funcion coseno
 			fst[grados]       //almacenamiento y comparacion 
 	}
@@ -205,7 +211,7 @@ inicio: int n;
 		cin >> b;
 		cout << "..::..::..::..::..::..::..::..::..::..::.."
 			<< endl << "..::..El resultado de la operación es.::..\n"
-			<< ".::.=>" << sumar(a, b) << endl
+			<< ".::.=>" << sumar(a,b) << endl
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
