@@ -146,7 +146,6 @@ float _exp(float n) {
 	}
 	return res;
 }
-<<<<<<< HEAD
 /*float nep_log(float x) {
 	float half = 0.5, one = 1, res = 0, it = 1, tmp = 0, n = 1, ten = 10;
 	__asm {
@@ -355,23 +354,10 @@ float seno(float n){
 		fld grados            //guarda losgrados 
 			fsin              //la funcion seno
 			fst[grados]       // almacenamiento y comparacion
-=======
-float seno(float n){
-	float radianes = 0.0174532925;
-	if (n == 180 || n == 360) {
-		return 0;
-	}
-	float grados = radianes*n;
-	__asm {
-		fld grados            //guarda losgrados 
-			fsin              //la funcion seno
-			fst[grados]       // almacenamiento y comparacion
->>>>>>> origin/master
 	}
 		
 }
 float coseno(float n) {
-<<<<<<< HEAD
 	float radianes = 0.0174532925;
 	if (n == 90 || n == 270) {
 		return 0;
@@ -381,17 +367,6 @@ float coseno(float n) {
 		fld grados            //guarda losgrados 
 			fcos              //la funcion coseno
 			fst[grados]       //almacenamiento y comparacion 
-=======
-	float radianes = 0.0174532925;
-	if (n == 90 || n == 270) {
-		return 0;
-	}
-	float grados = radianes*n;
-	__asm {
-		fld grados            //guarda losgrados 
-			fcos              //la funcion coseno
-			fst[grados]       //almacenamiento y comparacion 
->>>>>>> origin/master
 	}
 }
 float tangente(float n) {
@@ -416,12 +391,9 @@ inicio: int n;
 		<<".::. = > El seno de un números(8) se calculara con Funcion..::..::\n"
 		<< ".::. = > El coseno de un numero(9) se calculara con Funcion....::\n"
 		<< ".::. = > La Tangente de un numero(10)....::\n"
-<<<<<<< HEAD
 		<< ".::. = > Exponencial de un número(11) ..::\n"
 		<< ".::. = > Logaritmo base 10 de un número(12)::\n"
 		<< ".::. = > Logaritmo base 2 de un número(13).:\n"
-=======
->>>>>>> origin/master
 		<<"..::..::..::..::..::..::..::..::..::..::..\n"
 		<<"..::..Por favor digite el número de ..::..\n"
 		<<"..::..la operación que desea realizar ::..\n"
@@ -565,7 +537,32 @@ inicio: int n;
 		cout << "..::..::..::..::..::..::..::..::..::..::..";
 		cout << endl << "..::..El resultado de la operación es.::..\n"
 			<< ".::.=> " << seno(n) << endl
-<<<<<<< HEAD
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	
+	if (n == 9) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado Coseno:..::.\n"
+			<< "..::..ATENCION: El Coseno se calculara con Funcion.::..\n"
+			<< "..::..Ingrese el angulo.::.-->";
+		float n = 0;
+		cin >> n;
+		cout << "..::..::..::..::..::..::..::..::..::..::..";
+		cout << endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=> " << coseno(n) <<endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n ==10) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado Tangente::.\n"
+			<< "..::..Ingrese el angulo.::.-->";
+		float n = 0;
+		cin >> n;
+		cout << "..::..::..::..::..::..::..::..::..::..::..";
+		cout << endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=> " << tangente(n) << endl
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
@@ -611,41 +608,10 @@ inicio: int n;
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
-=======
-			<< "..::..::..::..::..::..::..::..::..::..::..";
-		goto continuacion;
-	}
->>>>>>> origin/master
-	if (n == 9) {
-		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
-		cout << "..::..Ha seleccionado Coseno:..::.\n"
-			<< "..::..ATENCION: El Coseno se calculara con Funcion.::..\n"
-			<< "..::..Ingrese el angulo.::.-->";
-		float n = 0;
-		cin >> n;
-		cout << "..::..::..::..::..::..::..::..::..::..::..";
-		cout << endl << "..::..El resultado de la operación es.::..\n"
-			<< ".::.=> " << coseno(n) <<endl
-			<< "..::..::..::..::..::..::..::..::..::..::..";
-		goto continuacion;
-	}
-	if (n ==10) {
-		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
-		cout << "..::..Ha seleccionado Tangente::.\n"
-			<< "..::..Ingrese el angulo.::.-->";
-		float n = 0;
-		cin >> n;
-		cout << "..::..::..::..::..::..::..::..::..::..::..";
-		cout << endl << "..::..El resultado de la operación es.::..\n"
-			<< ".::.=> " << tangente(n) << endl
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 continuacion: n = 0;
 	cout << endl << "..::..::..::..::..::..::..::..::..::..::.." << endl
 		<< "..::..Desea realizar otra operacion? (s/n)..::.." << endl
@@ -656,8 +622,8 @@ continuacion: n = 0;
 		goto inicio;
 	}
 	cout << "|__        ___ " << endl
-		<< "|__) (__| (__/_" << endl
-		<< "        |      " << endl;
+		 << "|__) (__| (__/_" << endl
+		 << "        |      " << endl;
 	system("pause");
 	return 0;
 }
