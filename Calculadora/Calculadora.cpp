@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "iostream"
+#include <cmath>
 
 const int zero = 0;
 const int minus1 = -1;
@@ -50,7 +51,7 @@ float dividir(float a, float b) {
 }
 float square_root(float base) {
 	const float uno = 1.0, dos = 2.0;
-	float zero = (float)::zero, minus1 = (float)::minus1, res = 0.0, tmp = 0.0, tmp1, tmp2;
+	float zero = (float)::zero, minus1 = (float)::minus1, res = 0.0, tmp = 0.0;
 	__asm {
 		finit;
 		fld[zero];
@@ -145,12 +146,220 @@ float _exp(float n) {
 	}
 	return res;
 }
+/*float nep_log(float x) {
+	float half = 0.5, one = 1, res = 0, it = 1, tmp = 0, n = 1, ten = 10;
+	__asm {
+		movss xmm0, x;
+		comiss xmm0, half;
+		ja ciclo2;
+	ciclo1:
+		//serie para cuando x es menor o igual a 1/2
+		//pregunta del ciclo, se harán 10 iteraciones
+		movss xmm0, n;
+		comiss xmm0, ten;
+		jae fin; //si n>=10, fin.
+		movss xmm0, x;
+		subss xmm0, one; 
+		movss tmp, xmm0; //tmp = x - 1
+		//hacer tmp^n
+		push ecx;
+		movss xmm0, dword ptr[n];
+		movss dword ptr[esp], xmm0;
+		push ecx;
+		movss xmm0, dword ptr[tmp];
+		movss dword ptr[esp], xmm0; //hasta aqui paso de parametros
+		call pot;
+		add esp, 8;
+		fstp dword ptr[tmp]; //tmp = tmp^n
+		movss xmm0, tmp;
+		divss xmm0, n;
+		movss tmp, xmm0; //tmp = tmp/n
+		//incrementar resultado (porque es una sumatoria)
+		movss xmm0, res;
+		addss xmm0, tmp;
+		movss res, xmm0; //res = res + tmp
+		//incrementar n
+		movss xmm0, n;
+		addss xmm0, one;
+		movss n, xmm0; //n++
+		jmp ciclo1;
+
+	ciclo2:
+		movss xmm0, n;
+		comiss xmm0, ten;
+		jae fin; //si n>=10 goto fin
+		//serie para cuando x > 1/2
+		movss xmm0, x;
+		subss xmm0, one; //x-1 en xmm0
+		divss xmm0, x; //(x-1)/x en xmm0
+		movss tmp, xmm0; //tmp = xmm0
+
+		//hacer tmp^n
+		push ecx;
+		movss xmm0, dword ptr[n];
+		movss dword ptr[esp], xmm0;
+		push ecx;
+		movss xmm0, dword ptr[tmp];
+		movss dword ptr[esp], xmm0; //hasta aqui paso de parametros
+		call pot;
+		add esp, 8; //se suman 4 al esp por c/argumento
+		fstp dword ptr[tmp]; //tmp = *retorno de la funcion*
+		//tmp = tmp/n
+		movss xmm0, tmp;
+		divss xmm0, n;
+		movss tmp, xmm0;//tmp /= n
+		//sumar al resultado
+		movss xmm0, res;
+		addss xmm0, tmp;
+		movss res, xmm0; //res += tmp
+		//inc n
+		movss xmm0, n;
+		addss xmm0, one;
+		movss n, xmm0; //n++
+		jmp ciclo2;
+	}
+fin:
+	return res;
+}*/
+float nep_log(float x) {
+	float res = 0, n = 1, tmp1 = 0, tmp2 = 0;
+	const float ten = 1000, one = 1, two = 2;
+	/*while (n < 50) {
+		tmp1 = x - 1;
+		tmp2 = x + 1;
+		tmp1 = tmp1 / tmp2;
+		tmp2 = 2 * n + 1;
+		tmp1 = powf(tmp1, tmp2);
+		tmp1 = tmp1 / tmp2;
+		res = res + tmp1;
+		n = n+1;
+	}
+	res = res * 2;
+	return res;*/
+	__asm {
+	ciclo:
+		movss xmm0, ten;
+		comiss xmm0, n;
+		jbe finaldelciclo;
+		movss xmm0, x;
+		subss xmm0, one;
+		movss tmp1, xmm0; //tmp1 = x-1
+		movss xmm0, x;
+		addss xmm0, one;
+		movss tmp2, xmm0; //tmp2 = x+1
+		movss xmm0, tmp1;
+		divss xmm0, tmp2;
+		movss tmp1, xmm0; //tmp1 = tmp1/tmp2
+		movss xmm0, n;
+		mulss xmm0, two;
+		addss xmm0, one;
+		movss xmm0, tmp2; //tmp2 = 2 * n + 1
+		//llamar pot(tmp1, tmp2);
+		push ecx;
+		movss xmm0, dword ptr[tmp2];
+		movss dword ptr[esp], xmm0;
+		push ecx;
+		movss xmm0, dword ptr[tmp1];
+		movss dword ptr[esp], xmm0;
+		call powf;
+		add esp, 8;
+		fstp dword ptr[tmp1]; //tmp1 = pot(tmp1, tmp2)
+		movss xmm0, tmp1;
+		divss xmm0, tmp2;
+		movss tmp1, xmm0; //tmp1 = tmp1 / tmp2
+		movss xmm0, res;
+		addss xmm0, tmp1;
+		movss res, xmm0; //res = res+ tmp1
+		movss xmm0, n;
+		addss xmm0, one;
+		movss n, xmm0; //n++
+		jmp ciclo;
+
+	finaldelciclo:
+		movss xmm0, res;
+		mulss xmm0, two;
+		movss res, xmm0;
+	}
+	return res;
+
+}
+float ten_log(float x) {
+	float res, ln10, aux;
+	const float ten = 10;
+	__asm {
+		/*//hallar ln(10)
+		push ecx;
+		movss xmm0, dword ptr[ten];
+		movss dword ptr[esp], xmm0; //push de parametros
+		call nep_log;
+		add esp, 4;
+		fstp dword ptr[ln10];
+		//hallar ln(x)
+		push ecx;
+		movss xmm0, dword ptr[x];
+		movss dword ptr[esp], xmm0; //push parametros
+		call nep_log;
+		add esp, 4;
+		fstp dword ptr[res];
+		//ln(x) / ln(10)
+		movss xmm0, res;
+		divss xmm0, ln10;
+		movss res, xmm0;*/
+		fld1;
+		fld x;
+		fyl2x;
+		fstp aux;
+		fld aux;
+		fldl2t;
+		fdivp st(1), st(0);
+		fstp res;
+	}
+	return res;
+}
+float two_log(float x) {
+	float res, ln2;
+	const float two = 2;
+	__asm {
+		/*//hallar ln(2)
+		push ecx;
+		movss xmm0, dword ptr[two];
+		movss dword ptr[esp], xmm0; //push parametro
+		call nep_log;
+		add esp, 4;
+		fstp dword ptr[ln2];
+		//hallar ln(x)
+		push ecx;
+		movss xmm0, dword ptr[x];
+		movss dword ptr[esp], xmm0; //push parametro
+		call nep_log;
+		add esp, 4;
+		fstp dword ptr[res]; //res = ln(x)
+		movss xmm0, res;
+		divss xmm0, ln2;
+		movss res, xmm0; //res = ln(x) / ln(2)*/
+		fld1;
+		fld x;
+		fyl2x;
+		fst res;
+	}
+	return res;
+}
+
 
 int main()
 {   
 inicio: int n;
 	float a, b;
-	cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..Bienvenido a la calculadora..::..::.\n..::..¿Qué operación desea realizar ? ..::..\n.::. = > Sumar dos números(1) ..::..::..::..\n.::. = > Restar dos números(2) ..::..::..::.\n.::. = > Multiplicar dos números(3) ..::..::\n.::. = > Dividir dos números(4) ..::..::..::\n.::. = > Elevar un número a una potencia(5) :\n.::. = > Raíz cuadrada de un número(6) ..::\n.::. = > Factorial de un número(7) ..::..::\n..::..::..::..::..::..::..::..::..::..::..\n..::..Por favor digite el número de ..::..\n..::..la operación que desea realizar ::..\n.::.-->";
+	cout << "..::..::..::..::..::..::..::..::..::..::..\n..::..Bienvenido a la calculadora..::..::.\n"
+		<<"..::..¿Qué operación desea realizar ? ..::..\n.::. = > Sumar dos números(1) ..::..::..::..\n"
+		<<".::. = > Restar dos números(2) ..::..::..::.\n.::. = > Multiplicar dos números(3) ..::..::\n"
+		<< ".::. = > Dividir dos números(4) ..::..::..::\n.::. = > Elevar un número a una potencia(5) :\n"
+		 << ".::. = > Raíz cuadrada de un número(6) ..::\n.::. = > Factorial de un número(7) ..::..::\n"
+		<< ".::. = > Exponencial de un número(8) ..::\n"
+		<< ".::. = > Logaritmo base 10 de un número(9)::\n"
+		<< ".::. = > Logaritmo base 2 de un número(10).:\n"
+		<< "..::..::..::..::..::..::..::..::..::..::..\n..::..Por favor digite el número de ..::..\n"
+		<< "..::..la operación que desea realizar ::..\n.::.-->";
 	cin >> n;
 
 	if (n == 1) {
@@ -272,6 +481,48 @@ inicio: int n;
 		cout << "..::..::..::..::..::..::..::..::..::..::.."
 			<< endl << "..::..El resultado de la operación es.::..\n"
 			<< ".::.=>" << b << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n == 8) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado exponencial.::..::.\n"
+			<< "..::..ATENCION: Solo esta permitido:..::..\n"
+			<< "..::..El uso de enteros positivos  :..::..\n"
+			<< "..::..Por favor, digite el número.::..::..\n"
+			<< ".::.-->";
+		cin >> a;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << _exp(a) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n == 9) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado logaritmo_10::..::.\n"
+			<< "..::..ATENCION: Solo esta permitido:..::..\n"
+			<< "..::..El uso de enteros positivos  :..::..\n"
+			<< "..::..Por favor, digite el número.::..::..\n"
+			<< ".::.-->";
+		cin >> a;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << ten_log(a) << endl
+			<< "..::..::..::..::..::..::..::..::..::..::..";
+		goto continuacion;
+	}
+	if (n == 10) {
+		cout << "..::..::..::..::..::..::..::..::..::..::..\n";
+		cout << "..::..Ha seleccionado logaritmo_2::..::.\n"
+			<< "..::..ATENCION: Solo esta permitido:..::..\n"
+			<< "..::..El uso de enteros positivos  :..::..\n"
+			<< "..::..Por favor, digite el número.::..::..\n"
+			<< ".::.-->";
+		cin >> a;
+		cout << "..::..::..::..::..::..::..::..::..::..::.."
+			<< endl << "..::..El resultado de la operación es.::..\n"
+			<< ".::.=>" << two_log(a) << endl
 			<< "..::..::..::..::..::..::..::..::..::..::..";
 		goto continuacion;
 	}
